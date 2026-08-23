@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareAI — Your Everyday Companion</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Care<span>AI</span></div>
+
+    <button class="language-btn" onclick="changeLanguage()">
+        🌐 EN
+    </button>
+</header>
+
+
+<main>
+
+    <!-- Welcome -->
+    <section class="welcome">
+        <div>
+            <p class="small-text">Good morning</p>
+            <h1>Hello, Maria 👋</h1>
+            <p class="subtitle">
+                I'm here to help you feel supported throughout your day.
+            </p>
+        </div>
+    </section>
+
+
+    <!-- Daily Check-in -->
+    <section class="card checkin-card">
+
+        <div class="card-icon">❤️</div>
+
+        <div class="card-content">
+            <h2>How are you feeling today?</h2>
+            <p>Take a moment to check in with yourself.</p>
+
+            <div class="feelings">
+
+                <button onclick="feeling('great')">
+                    😊
+                    <span>Great</span>
+                </button>
+
+                <button onclick="feeling('good')">
+                    🙂 
+                    <span>Good</span>
+                </button>
+
+                <button onclick="feeling('okay')">
+                    😐
+                    <span>Okay</span>
+                </button>
+
+                <button onclick="feeling('sad')">
+                    😔
+                    <span>Sad</span>
+                </button>
+
+            </div>
+
+            <p id="feeling-response" class="response"></p>
+        </div>
+
+    </section>
+
+
+    <!-- Medication -->
+    <section class="card">
+
+        <div class="card-icon">💊</div>
+
+        <div class="card-content">
+
+            <h2>Medication reminder</h2>
+
+            <div class="medicine">
+                <div>
+                    <strong>Morning medication</strong>
+                    <p>Take at 14:00</p>
+                </div>
+
+                <span class="status">Upcoming</span>
+            </div>
+
+            <button class="main-button" onclick="medicationTaken()">
+                ✓ Mark as taken
+            </button>
+
+            <p id="medicine-response" class="response"></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- AI Assistant -->
+    <section class="card assistant">
+
+        <div class="card-icon">🤖</div>
+
+        <div class="card-content">
+
+            <h2>Talk to your assistant</h2>
+
+            <p>
+                You can tell me about your day, ask a question,
+                or simply have a conversation.
+            </p>
+
+            <div class="chat-box" id="chat-box">
+
+                <div class="message assistant-message">
+                    Hello! I'm here to talk with you. How is your day going?
+                </div>
+
+            </div>
+
+            <div class="chat-input">
+
+                <input
+                    id="user-input"
+                    type="text"
+                    placeholder="Type something..."
+                    onkeydown="handleEnter(event)"
+                >
+
+                <button onclick="sendMessage()">
+                    Send
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Daily summary -->
+    <section class="card summary">
+
+        <div class="card-icon">📋</div>
+
+        <div class="card-content">
+
+            <h2>Today's wellbeing</h2>
+
+            <div class="summary-item">
+                <span>Daily check-in</span>
+                <strong id="checkin-status">Not completed</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Medication</span>
+                <strong id="medication-status">Upcoming</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Conversation</span>
+                <strong id="conversation-status">Not started</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    <p>CareAI</p>
+    <p class="footer-small">
+        Prototype for educational purposes. Not a medical diagnostic tool.
+    </p>
+</footer>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
