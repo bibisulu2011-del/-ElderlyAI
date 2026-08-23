@@ -1,140 +1,208 @@
-function feeling(type) {
+/* VOICE INPUT */
 
-    const response = document.getElementById("feeling-response");
-    const status = document.getElementById("checkin-status");
+function startVoiceInput() {
 
-    status.textContent = "Completed";
+    const status =
+        document.getElementById("voice-status");
 
-    const messages = {
-        great: "That's wonderful to hear! I hope you have a lovely day. 😊",
-        good: "I'm glad you're feeling good today. Keep taking care of yourself! 🌷",
-        okay: "Thank you for checking in. Remember to take some time for yourself today.",
-        sad: "I'm sorry you're feeling sad. I'm here if you'd like to talk about your day. ❤️"
-    };
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
 
-    response.textContent = messages[type];
-}
+    if (!SpeechRecognition) {
 
+        status.textContent =
+            translations[currentLanguage].voiceNotSupported;
 
-function medicationTaken() {
-
-    const response = document.getElementById("medicine-response");
-    const status = document.getElementById("medication-status");
-
-    status.textContent = "Taken";
-    status.style.color = "#3a9b63";
-
-    response.textContent =
-        "Great! Your medication has been marked as taken. 💊";
-}
-
-
-function sendMessage() {
-
-    const input = document.getElementById("user-input");
-    const chatBox = document.getElementById("chat-box");
-    const status = document.getElementById("conversation-status");
-
-    const message = input.value.trim();
-
-    if (message === "") {
         return;
+
     }
 
-    // User message
 
-    const userMessage = document.createElement("div");
+    const recognition =
+        new SpeechRecognition();
 
-    userMessage.className = "message user-message";
-    userMessage.textContent = message;
+    recognition.lang =
+        currentLanguage === "ru"
+            ? "ru-RU"
+            : currentLanguage === "kk"
+                ? "kk-KZ"
+                : "en-US";
 
-    chatBox.appendChild(userMessage);
+    recognition.interimResults =
+        false;
 
-    input.value = "";
+    recognition.maxAlternatives =
+        1;
 
-    status.textContent = "Active";
 
-    // Simple prototype responses
+    status.textContent =
+        translations[currentLanguage].voiceListening;
 
-    setTimeout(function () {
 
-        const assistantMessage =
-            document.createElement("div");
+    recognition.start();
 
-        assistantMessage.className =
-            "message assistant-message";
 
-        const lowerMessage = message.toLowerCase();
+    recognition.onresult =
+        function(event) {
 
-        let reply =
-            "Thank you for sharing that with me. Would you like to tell me more?";
+            const text =
+                event.results[0][0].transcript;
 
-        if (
-            lowerMessage.includes("sad") ||
-            lowerMessage.includes("lonely") ||
-            lowerMessage.includes("alone")
-        ) {
+            document.getElementById("user-input").value =
+                text;
 
-            reply =
-                "I'm sorry you're feeling this way. I'm here to listen. Would you like to tell me about your day?";
+            sendMessage();
 
-        } else if (
-            lowerMessage.includes("happy") ||
-            lowerMessage.includes("good")
-        ) {
+        };
 
-            reply =
-                "I'm happy to hear that! What made your day good? 😊";
 
-        } else if (
-            lowerMessage.includes("tired") ||
-            lowerMessage.includes("sleep")
-        ) {
+    recognition.onerror =
+        function() {
 
-            reply =
-                "It sounds like you may need some rest. How did you sleep last night?";
+            status.textContent = "";
 
-        } else if (
-            lowerMessage.includes("pain") ||
-            lowerMessage.includes("hurt")
-        ) {
+        };
 
-            reply =
-                "I'm sorry you're experiencing discomfort. If the pain is severe, sudden, or worrying you, please contact a healthcare professional or someone you trust.";
 
-        } else if (
-            lowerMessage.includes("hello") ||
-            lowerMessage.includes("hi")
-        ) {
+    recognition.onend =
+        function() {
 
-            reply =
-                "Hello! It's nice to talk with you. How are you feeling today?";
+            setTimeout(function() {
 
-        }
+                status.textContent = "";
 
-        assistantMessage.textContent = reply;
+            }, 1500);
 
-        chatBox.appendChild(assistantMessage);
+        };
 
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-    }, 700);
 }
 
 
-function handleEnter(event) {
+/* VOICE OUTPUT */
 
-    if (event.key === "Enter") {
-        sendMessage();
-    }
+function speak(text) {
+
+    if (!window.speechSynthesis) return;
+
+    window.speechSynthesis.cancel();
+
+    const speech =
+        new SpeechSynthesisUtterance(text);
+
+    speech.lang =
+        currentLanguage === "ru"
+            ? "ru-RU"
+            : currentLanguage === "kk"
+                ? "kk-KZ"
+                : "en-US";
+
+    speech.rate = 0.9;
+
+    speech.pitch = 1;
+
+    window.speechSynthesis.speak(speech);
 
 }
 
+
+/* LANGUAGE */
 
 function changeLanguage() {
 
-    alert(
-        "Language switching will be added in the next version."
-    );
+    currentLanguage =
+        document.getElementById("language-select").value;
+
+    const t =
+        translations[currentLanguage];
+
+
+    document.getElementById("greeting").textContent =
+        t.greeting;
+
+    document.getElementById("hello-text").textContent =
+        t.hello;
+
+    document.getElementById("subtitle").textContent =
+        t.subtitle;
+
+
+    document.getElementById("checkin-title").textContent =
+        t.checkinTitle;
+
+    document.getElementById("checkin-description").textContent =
+        t.checkinDescription;
+
+
+    document.getElementById("great-text").textContent =
+        t.great;
+
+    document.getElementById("good-text").textContent =
+        t.good;
+
+    document.getElementById("okay-text").textContent =
+        t.okay;
+
+    document.getElementById("sad-text").textContent =
+        t.sad;
+
+
+    document.getElementById("medicine-title").textContent =
+        t.medicineTitle;
+
+    document.getElementById("medicine-description").textContent =
+        t.medicineDescription;
+
+    document.getElementById("medicine-name").textContent =
+        t.medicineName;
+
+    document.getElementById("medicine-time").textContent =
+        t.medicineTime;
+
+
+    document.getElementById("medicine-button").textContent =
+        t.medicineButton;
+
+
+    document.getElementById("assistant-title").textContent =
+        t.assistantTitle;
+
+    document.getElementById("assistant-description").textContent =
+        t.assistantDescription;
+
+    document.getElementById("user-input").placeholder =
+        t.placeholder;
+
+    document.getElementById("send-button").textContent =
+        t.send;
+
+
+    document.getElementById("summary-title").textContent =
+        t.summaryTitle;
+
+    document.getElementById("summary-checkin").textContent =
+        t.summaryCheckin;
+
+    document.getElementById("summary-medication").textContent =
+        t.summaryMedication;
+
+    document.getElementById("summary-conversation").textContent =
+        t.summaryConversation;
+
+
+    document.getElementById("footer-text").textContent =
+        t.footer;
 
 }
+
+
+/* START */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        loadApp();
+
+    }
+);
